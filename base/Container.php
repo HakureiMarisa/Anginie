@@ -19,9 +19,19 @@ class Container #implements ArrayAccess
 
     protected $instances = array();
 
-    public function register($binding, $implement)
+    public function register($binding, $implement = null)
     {
-        
+        if ($implement instanceof Closure) {
+            $this->bindings[$binding] = $implement;
+        } else {
+            if (is_null($implement)) {
+                $implement = $binding;
+            }
+
+            $this->bindings[$binding] = function(Container $container, $parameters) use ($implement){
+                return $container->build($implement, $parameters);
+            };
+        }
     }
 
     public function load($binding, $parameters = array())
@@ -30,12 +40,16 @@ class Container #implements ArrayAccess
            return $this->instances[$binding];
         }
 
-        $instance = $this->build($binding, $parameters);
+        if (isset($this->bindings[$binding])) {
+            $instance = call_user_func($this->bindings[$binding], $this, $parameters);
+        } else {
+            $instance = $this->build($binding, $parameters);
+        }
 
         return $this->instances[$binding] = $instance;
     }
 
-    private function bulid($binding, $parameters)
+    public function build($binding, $parameters)
     {
         if ($binding instanceof Closure) {
             return call_user_func($binding, $binding);
@@ -55,7 +69,6 @@ class Container #implements ArrayAccess
 
         $reflectionParameters = $constructor->getParameters();
 
-
         foreach ($reflectionParameters as $i => $parameter) {
             if (isset($parameters[$parameter->getName()])) {
                 $dependencies[] = $parameters[$parameter->getName()];
@@ -64,7 +77,7 @@ class Container #implements ArrayAccess
 
             $dependency = $parameter->getClass();
             if (!is_null($dependency)) {
-                $dependencies[] = $this->bind($dependency->name);
+                $dependencies[] = $this->load($dependency->name);
             }else if ($parameter->isDefaultValueAvailable()) {
                 $dependencies[] = $parameter->getDefaultValue();
             }else{
