@@ -23,10 +23,8 @@ var_dump($this);
     }
 }
 
-require 'Container.php';
-$container = new Container();
-$a = $container->bind('\Anginie\Base\A', array('a' => 2));
+require 'Autoloader.php';
+$loader = new Autoloader();
+$loader->register();
 
-$a->dump();
-
-var_dump($a);
+$a = new \c\c();
