@@ -27,4 +27,4 @@ require 'Autoloader.php';
 $loader = new Autoloader();
 $loader->register();
 
-$a = new \c\c();
+$a = new c\c();
