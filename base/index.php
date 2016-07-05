@@ -25,6 +25,8 @@ var_dump($this);
 
 require 'Autoloader.php';
 $loader = new Autoloader();
+$loader->addNamespace('\Anginie\\', 'base/');
+
 $loader->register();
 
 $a = new c\c();
