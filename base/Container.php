@@ -78,9 +78,9 @@ class Container #implements ArrayAccess
             $dependency = $parameter->getClass();
             if (!is_null($dependency)) {
                 $dependencies[] = $this->load($dependency->name);
-            }else if ($parameter->isDefaultValueAvailable()) {
+            } elseif ($parameter->isDefaultValueAvailable()) {
                 $dependencies[] = $parameter->getDefaultValue();
-            }else{
+            } else {
                 throw new \Exception("无法解析{$parameter->getDeclaringClass()->getName()}类中的{$parameter->getName()}参数");
             }
         }

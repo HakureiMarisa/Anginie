@@ -40,24 +40,13 @@ class Autoloader
 
     private function loadFile($class)
     {
-    	$path = str_replace('\\', DIRECTORY_SEPARATOR, $class);
-        $pos = strrpos($class, '\\');
-        if (false !== $pos)
-        {
-            $classPath = str_replace('\\', DIRECTORY_SEPARATOR, substr($class, 0, $pos)) . DIRECTORY_SEPARATOR;
-            $className = substr($class, $pos + 1);
-        } else {
-            $classPath = null;
-            $className = $class;
-        }
-
         foreach($this->namespaces as $namespace => $dirPaths)
         {
-            if (false !== strstr($class, $namespace)) {
+            if (false !== strpos($class, $namespace)) {
                 foreach ($dirPaths as $dirPath) {
-
-                    if (file_exists($dirPath . DIRECTORY_SEPARATOR . $className)) {
-                        return $dirPath . DIRECTORY_SEPARATOR . $className;
+                    $path = str_replace('\\', DIRECTORY_SEPARATOR, str_replace($namespace, $dirPath, $class)) . '.php';
+                    if (file_exists($path)) {
+                        return $path;
                     }
                 }
             }
