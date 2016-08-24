@@ -28,7 +28,7 @@ class Container #implements ArrayAccess
                 $implement = $binding;
             }
 
-            $this->bindings[$binding] = function(Container $container, $parameters) use ($implement){
+            $this->bindings[$binding] = function (Container $container, $parameters) use ($implement) {
                 return $container->build($implement, $parameters);
             };
         }
@@ -37,7 +37,7 @@ class Container #implements ArrayAccess
     public function load($binding, $parameters = array())
     {
         if (isset($this->instances[$binding])) {
-           return $this->instances[$binding];
+            return $this->instances[$binding];
         }
 
         if (isset($this->bindings[$binding])) {
@@ -57,7 +57,7 @@ class Container #implements ArrayAccess
 
         $reflector = new ReflectionClass($binding);
         if (!$reflector->isInstantiable()) {
-            throw new Exception("不可实例化" . $reflector->getName());
+            throw new \Exception("不可实例化" . $reflector->getName());
         }
 
         $constructor = $reflector->getConstructor();
