@@ -19,7 +19,7 @@ class Container #implements ArrayAccess
 
     protected $instances = array();
 
-    public function register($binding, $implement = null)
+    public function register($binding, $implement = null, $singleton = false)
     {
         if ($implement instanceof Closure) {
             $this->bindings[$binding] = $implement;
@@ -28,9 +28,12 @@ class Container #implements ArrayAccess
                 $implement = $binding;
             }
 
-            $this->bindings[$binding] = function (Container $container, $parameters) use ($implement) {
-                return $container->build($implement, $parameters);
-            };
+            $this->bindings[$binding] = array(
+                'concrete' => function (Container $container, $parameters) use ($implement) {
+                    return $container->build($implement, $parameters);
+                },
+                'singleton' => $singleton
+            );
         }
     }
 
@@ -40,13 +43,17 @@ class Container #implements ArrayAccess
             return $this->instances[$binding];
         }
 
+        $singleton = false;
         if (isset($this->bindings[$binding])) {
-            $instance = call_user_func($this->bindings[$binding], $this, $parameters);
+            $instance = call_user_func($this->bindings[$binding]['concrete'], $this, $parameters);
+            $singleton = $this->bindings[$binding]['singleton'];
         } else {
             $instance = $this->build($binding, $parameters);
         }
-
-        return $this->instances[$binding] = $instance;
+        if ($singleton) {
+            $this->instances[$binding] = $instance;
+        }
+        return $instance;
     }
 
     public function build($binding, $parameters)
