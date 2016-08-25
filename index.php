@@ -1,14 +1,13 @@
 <?php
 
-require './base/Autoloader.php';
+require 'framework/base/Autoloader.php';
 $loader = new \Anginie\Base\Autoloader();
-$loader->addNamespace('\Anginie\\', 'D:/Workspace/Anginie/');
+$loader->addNamespace('\Anginie\\', 'D:/Workspace/Anginie/framework/');
+$loader->addNamespace('\App\\', 'D:/Workspace/Anginie/app/');
 $loader->register();
 
 
-$container = new \Anginie\Base\Container();
+$app = new \Anginie\Base\Application();
 
-$c = $container->register('\Anginie\Base\Request', null, true);
-$c = $container->load('\Anginie\Base\Request');
-$c = $container->load('\Anginie\Base\Request');
-$c->get('ss');
+
+$app->run();
