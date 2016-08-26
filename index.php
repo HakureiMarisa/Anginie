@@ -1,6 +1,6 @@
 <?php
 
-require 'framework/base/Autoloader.php';
+require 'framework/Base/Autoloader.php';
 $loader = new \Anginie\Base\Autoloader();
 $loader->addNamespace('\Anginie\\', 'D:/Workspace/Anginie/framework/');
 $loader->addNamespace('\App\\', 'D:/Workspace/Anginie/app/');

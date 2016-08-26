@@ -6,7 +6,7 @@ class Request
 {
     public function __construct()
     {
-        echo '1';
+
     }
 
     public function get($paramName, $defaultValue = false)
